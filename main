@@ -42,7 +42,11 @@ end
 
 coroutine.wrap(function()
     while task.wait(1) do
-        if Discord.Debug and not Discord.HasSentDebugMessage then
+        if Discord.HasSentDebugMessage then
+            break
+        end
+
+        if Discord.Debug then
             if not Discord.DebugWebhook or Discord.DebugWebhook == "" then
                 continue
             end
