@@ -24,6 +24,10 @@ function Discord:ConstructEmbed(title, description, color, fields, footer)
 end
 
 function Discord:SendWebhook(webhook, message, embeds, username)
+    if embeds then
+        message = ""
+    end
+    
     local data = {
         content = message,
         username = username,
