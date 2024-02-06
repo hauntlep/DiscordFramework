@@ -20,12 +20,8 @@ function Discord:ConstructEmbed(title, description, color, fields, footer)
 end
 
 function Discord:SendWebhook(webhook, message, embeds, username)
-    if embeds then
-        message = ""
-    end
-
     local data = {
-        content = message,
+        content = message and message or nil,
         username = username,
         embeds = embeds
     }
@@ -38,6 +34,11 @@ function Discord:SendWebhook(webhook, message, embeds, username)
         },
         Body = game:GetService("HttpService"):JSONEncode(data)
     })
+
+    if not response then
+        error("Failed to send webhook")
+        return false
+    end
 end
 
 return Discord
