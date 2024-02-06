@@ -1,0 +1,54 @@
+-- provides various utility functions for interacting with the Discord API in LuaU
+
+local Discord = {}
+Discord.Debug = true
+Discord.DebugWebhook = ""
+Discord.Version = "1.0.0"
+Discord.HasSentDebugMessage = false
+
+local request = syn and syn.request or request
+
+if not request then
+    error("Your exploit does not support HTTP requests")
+end
+
+function Discord:ConstructEmbed(title, description, color, fields, footer)
+    local embed = {
+        title = title,
+        description = description,
+        color = color,
+        fields = fields,
+        footer = footer
+    }
+    return embed
+end
+
+function Discord:SendWebhook(webhook, message, embeds, username)
+    local data = {
+        content = message,
+        username = username,
+        embeds = embeds
+    }
+
+    local response = request({
+        Url = webhook,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = game:GetService("HttpService"):JSONEncode(data)
+    })
+end
+
+coroutine.wrap(function()
+    if Discord.Debug and not Discord.HasSentDebugMessage then
+        if not Discord.DebugWebhook or Discord.DebugWebhook == "" then
+            error("DISCORD: You have not set a debug webhook, please set one in the Discord.DebugWebhook variable")
+        end
+
+        Discord.HasSentDebugMessage = true
+        Discord:SendWebhook(Discord.DebugWebhook, "Discord Library has been loaded", "Discord Library", {Discord:ConstructEmbed("Discord Library", "The Discord Library has been loaded", 0x00FF00)})
+    end
+end)()
+
+return Discord
