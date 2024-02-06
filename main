@@ -41,13 +41,15 @@ function Discord:SendWebhook(webhook, message, embeds, username)
 end
 
 coroutine.wrap(function()
-    if Discord.Debug and not Discord.HasSentDebugMessage then
-        if not Discord.DebugWebhook or Discord.DebugWebhook == "" then
-            error("DISCORD: You have not set a debug webhook, please set one in the Discord.DebugWebhook variable")
-        end
+    while task.wait(1) do
+        if Discord.Debug and not Discord.HasSentDebugMessage then
+            if not Discord.DebugWebhook or Discord.DebugWebhook == "" then
+                continue
+            end
 
-        Discord.HasSentDebugMessage = true
-        Discord:SendWebhook(Discord.DebugWebhook, "Discord Library has been loaded", "Discord Library", {Discord:ConstructEmbed("Discord Library", "The Discord Library has been loaded", 0x00FF00)})
+            Discord.HasSentDebugMessage = true
+            Discord:SendWebhook(Discord.DebugWebhook, "Discord Library has been loaded", {Discord:ConstructEmbed("Discord Library", "The Discord Library has been loaded", 0x00FF00)})
+        end
     end
 end)()
 
