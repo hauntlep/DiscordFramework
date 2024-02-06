@@ -1,10 +1,6 @@
 -- provides various utility functions for interacting with the Discord API in LuaU
 
 local Discord = {}
-Discord.Debug = true
-Discord.DebugWebhook = ""
-Discord.Version = "1.0.0"
-Discord.HasSentDebugMessage = false
 
 local request = syn and syn.request or request
 
@@ -27,7 +23,7 @@ function Discord:SendWebhook(webhook, message, embeds, username)
     if embeds then
         message = ""
     end
-    
+
     local data = {
         content = message,
         username = username,
@@ -43,22 +39,5 @@ function Discord:SendWebhook(webhook, message, embeds, username)
         Body = game:GetService("HttpService"):JSONEncode(data)
     })
 end
-
-coroutine.wrap(function()
-    while task.wait(1) do
-        if Discord.HasSentDebugMessage then
-            break
-        end
-
-        if Discord.Debug then
-            if not Discord.DebugWebhook or Discord.DebugWebhook == "" then
-                continue
-            end
-
-            Discord.HasSentDebugMessage = true
-            Discord:SendWebhook(Discord.DebugWebhook, "Discord Library has been loaded", {Discord:ConstructEmbed("Discord Library", "The Discord Library has been loaded", 0x00FF00)})
-        end
-    end
-end)()
 
 return Discord
